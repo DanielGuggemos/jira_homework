@@ -12,45 +12,48 @@ week = datetime.datetime.now().isocalendar()[1]
 auth = (email, token)
 headers = {"Content-Type": "application/json"}
 
-# --- 1. Epic erstellen ---
-epic_payload = {
+# --- 1. Story erstellen ---
+story_payload = {
     "fields": {
         "project": {"key": project},
-        "summary": f"Woche {week} – Weekly Epic",
-        "issuetype": {"name": "Epic"}
+        "summary": f"Woche {week} – Weekly Story",
+        "issuetype": {"name": "Story"}
     }
 }
 
-r = requests.post(f"{base_url}/rest/api/3/issue", json=epic_payload, auth=auth, headers=headers)
+r = requests.post(f"{base_url}/rest/api/3/issue", json=story_payload, auth=auth, headers=headers)
 if r.status_code >= 300:
-    print("Epic-Fehler:", r.status_code)
+    print("Story-Fehler:", r.status_code)
     print(r.text)
     exit(1)
 
-epic_key = r.json()["key"]
-print(f"Epic erstellt: {epic_key}")
+story_key = r.json()["key"]
+print(f"Story erstellt: {story_key}")
 
-# --- 2. Tasks erstellen (in Teamprojekten ohne Epic-Link) ---
-tasks = [
-    "Wocheneinstieg",
-    "Teammeeting vorbereiten",
-    "Review der offenen Punkte",
-    "Planung nächste Schritte"
+# --- 2. Sub‑Tasks erstellen (funktioniert in teamverwalteten Projekten) ---
+subtasks = [
+    "Treppenaus saugen 1",
+    "Treppenaus saugen 2",
+    "Bad und Klo putzen",
+    "Küche und Gang saugen 1",
+    "Küche und Gang saugen 2",
+    "Küche und Gang saugen 3",
 ]
 
-for summary in tasks:
-    task_payload = {
+for summary in subtasks:
+    sub_payload = {
         "fields": {
             "project": {"key": project},
             "summary": summary,
-            "issuetype": {"name": "Task"}
+            "issuetype": {"name": "Sub-task"},
+            "parent": {"key": story_key}
         }
     }
 
-    r = requests.post(f"{base_url}/rest/api/3/issue", json=task_payload, auth=auth, headers=headers)
+    r = requests.post(f"{base_url}/rest/api/3/issue", json=sub_payload, auth=auth, headers=headers)
     if r.status_code >= 300:
-        print("Task-Fehler:", r.status_code)
+        print("Subtask-Fehler:", r.status_code)
         print(r.text)
         exit(1)
 
-    print(f"Task erstellt: {r.json()['key']}")
+    print(f"Subtask erstellt: {r.json()['key']}")
