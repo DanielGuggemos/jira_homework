@@ -23,13 +23,14 @@ epic_payload = {
 
 r = requests.post(f"{base_url}/rest/api/3/issue", json=epic_payload, auth=auth, headers=headers)
 if r.status_code >= 300:
-    print("Epic-Fehler:", r.status_code, r.text)
+    print("Epic-Fehler:", r.status_code)
+    print(r.text)
     exit(1)
 
 epic_key = r.json()["key"]
 print(f"Epic erstellt: {epic_key}")
 
-# --- 2. Tasks erstellen (KEINE Epic-Verknüpfung möglich) ---
+# --- 2. Tasks erstellen (in Teamprojekten ohne Epic-Link) ---
 tasks = [
     "Wocheneinstieg",
     "Teammeeting vorbereiten",
@@ -37,17 +38,19 @@ tasks = [
     "Planung nächste Schritte"
 ]
 
-for t in tasks:
+for summary in tasks:
     task_payload = {
         "fields": {
             "project": {"key": project},
-            "summary": t,
+            "summary": summary,
             "issuetype": {"name": "Task"}
         }
     }
+
     r = requests.post(f"{base_url}/rest/api/3/issue", json=task_payload, auth=auth, headers=headers)
     if r.status_code >= 300:
-        print("Task-Fehler:", r.status_code, r.text)
+        print("Task-Fehler:", r.status_code)
+        print(r.text)
         exit(1)
+
     print(f"Task erstellt: {r.json()['key']}")
-``
