@@ -19,10 +19,10 @@ epic_payload = {
     "fields": {
         "project": {"key": project},
         "summary": f"Woche {week} – Weekly Epic",
-        "issuetype": {"name": "Epic"},
-        "customfield_10011": f"KW{week}"  # Epic Name Feld
+        "issuetype": {"name": "Epic"}
     }
 }
+
 
 r = requests.post(f"{base_url}/rest/api/3/issue", json=epic_payload, auth=auth, headers=headers)
 # r.raise_for_status()
