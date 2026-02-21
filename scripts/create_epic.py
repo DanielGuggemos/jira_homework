@@ -25,7 +25,12 @@ epic_payload = {
 }
 
 r = requests.post(f"{base_url}/rest/api/3/issue", json=epic_payload, auth=auth, headers=headers)
-r.raise_for_status()
+# r.raise_for_status()
+if r.status_code >= 300:
+    print("Error:", r.status_code)
+    print(r.text)
+    exit(1)
+
 epic_key = r.json()["key"]
 
 print(f"Epic erstellt: {epic_key}")
