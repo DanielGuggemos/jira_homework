@@ -1,0 +1,23 @@
+name: Create Weekly Jira Epic
+
+on:
+  schedule:
+    - cron: "0 6 * * 0" # jeden Sonntag um 06:00 UTC (Berlin = 07:00)
+  workflow_dispatch: # zum manuellen Testen
+
+jobs:
+  create-epic:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Run Epic Creation Script
+        env:
+          JIRA_EMAIL: ${{ secrets.JIRA_EMAIL }}
+          JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
+          JIRA_BASE_URL: ${{ secrets.JIRA_BASE_URL }}
+          JIRA_PROJECT_KEY: ${{ secrets.JIRA_PROJECT_KEY }}
+        run: |
+          python3 scripts/create_epic.py
