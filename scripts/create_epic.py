@@ -20,7 +20,7 @@ task_payload = {
         "issuetype": {"name": "Task"}
     }
 }
-
+'''
 r = requests.post(f"{base_url}/rest/api/3/issue", json=task_payload, auth=auth, headers=headers)
 if r.status_code >= 300:
     print("Task-Fehler:", r.status_code)
@@ -57,5 +57,5 @@ for summary in subtasks:
         exit(1)
 
     print(f"Subtask erstellt: {r.json()['key']}")
-
+'''
 
