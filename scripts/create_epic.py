@@ -12,25 +12,25 @@ week = datetime.datetime.now().isocalendar()[1]
 auth = (email, token)
 headers = {"Content-Type": "application/json"}
 
-# --- 1. Story erstellen ---
-story_payload = {
+# --- 1. Weekly Task erstellen ---
+task_payload = {
     "fields": {
         "project": {"key": project},
-        "summary": f"Woche {week} – Weekly Story",
-        "issuetype": {"name": "Story"}
+        "summary": f"Woche {week} – Weekly Task",
+        "issuetype": {"name": "Task"}
     }
 }
 
-r = requests.post(f"{base_url}/rest/api/3/issue", json=story_payload, auth=auth, headers=headers)
+r = requests.post(f"{base_url}/rest/api/3/issue", json=task_payload, auth=auth, headers=headers)
 if r.status_code >= 300:
-    print("Story-Fehler:", r.status_code)
+    print("Task-Fehler:", r.status_code)
     print(r.text)
     exit(1)
 
-story_key = r.json()["key"]
-print(f"Story erstellt: {story_key}")
+parent_key = r.json()["key"]
+print(f"Task erstellt: {parent_key}")
 
-# --- 2. Sub‑Tasks erstellen (funktioniert in teamverwalteten Projekten) ---
+# --- 2. Sub‑Tasks erstellen ---
 subtasks = [
     "Treppenaus saugen 1",
     "Treppenaus saugen 2",
@@ -46,7 +46,7 @@ for summary in subtasks:
             "project": {"key": project},
             "summary": summary,
             "issuetype": {"name": "Sub-task"},
-            "parent": {"key": story_key}
+            "parent": {"key": parent_key}
         }
     }
 
@@ -57,3 +57,5 @@ for summary in subtasks:
         exit(1)
 
     print(f"Subtask erstellt: {r.json()['key']}")
+
+
